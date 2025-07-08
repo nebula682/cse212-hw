@@ -1,4 +1,4 @@
-/// <summary>
+/*/// <summary>
 /// This queue is circular.  When people are added via AddPerson, then they are added to the 
 /// back of the queue (per FIFO rules).  When GetNextPerson is called, the next person
 /// in the queue is saved to be returned and then they are placed back into the back of the queue.  Thus,
@@ -53,5 +53,51 @@ public class TakingTurnsQueue
     public override string ToString()
     {
         return _people.ToString();
+    }
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using System;
+using System.Collections.Generic;
+
+public class TakingTurnsQueue
+{
+    private Queue<Person> queue = new Queue<Person>();
+
+    public int Length => queue.Count;
+
+    public void AddPerson(string name, int turns)
+    {
+        queue.Enqueue(new Person(name, turns));
+    }
+
+    public Person GetNextPerson()
+    {
+        if (queue.Count == 0)
+            throw new InvalidOperationException("No one in the queue.");
+
+        var person = queue.Dequeue();
+
+        bool isInfinite = person.Turns <= 0;
+
+        if (!isInfinite)
+            person.Turns--;
+
+        if (isInfinite || person.Turns > 0)
+            queue.Enqueue(person);
+
+        return person;
     }
 }
