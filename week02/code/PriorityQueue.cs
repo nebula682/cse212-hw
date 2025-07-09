@@ -10,6 +10,15 @@
 
 
 
+
+
+
+
+
+
+
+
+
 using System;
 using System.Collections.Generic;
 
@@ -42,19 +51,28 @@ public class PriorityQueue<T>
             throw new InvalidOperationException("The queue is empty.");
 
         int highestPriority = int.MinValue;
-        int index = -1;
 
-        for (int i = 0; i < items.Count; i++)
+        // First: find the highest priority
+        foreach (var item in items)
         {
-            if (items[i].Priority > highestPriority)
+            if (item.Priority > highestPriority)
             {
-                highestPriority = items[i].Priority;
-                index = i;
+                highestPriority = item.Priority;
             }
         }
 
-        T result = items[index].Value;
-        items.RemoveAt(index);
-        return result;
+        // Second: return the first item with that priority (FIFO within same priority)
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].Priority == highestPriority)
+            {
+                T result = items[i].Value;
+                items.RemoveAt(i);
+                return result;
+            }
+        }
+
+        // This point should never be reached
+        throw new InvalidOperationException("Unexpected error during dequeue.");
     }
 }
